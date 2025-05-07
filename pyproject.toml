@@ -1,6 +1,6 @@
 [project]
 name = "openrte"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python wrapper for RTE API requests"
 authors = [
   { name="Henri Upton", email="henriupton99@gmail.com" },
