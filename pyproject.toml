@@ -12,7 +12,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.2.3",
     "requests>=2.32.3",
@@ -31,3 +31,7 @@ dev = [
 [build-system]
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/henriupton99/openrte"
+Issues = "https://github.com/henriupton99/openrte/issues"

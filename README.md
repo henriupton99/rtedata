@@ -1,5 +1,7 @@
 # OpenRTE
 
+![openrte-logo](./doc/openrte.png)
+
 Python wrapper for [RTE API](https://data.rte-france.com/) requests. 
 
 ## 1. Usage
