@@ -7,27 +7,24 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 from openrte.tools import Logger
+from openrte.catalog import Catalog
 
 class Retriever:
-    def __init__(self, token: str, logger: Logger):
+    def __init__(self, token: str, logger: Logger, catalog: Catalog):
         self.token = token
         self.logger = logger
-        self.request_base_url = "https://digital.iservices.rte-france.com/open_api"
+        self.catalog = catalog
 
         self.headers = {
-            "User-Agent": "rte-api-wrapper (contact: henriupton99@gmail.com)",
+            "User-Agent": "openrte python package (contact: henriupton99@gmail.com)",
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json"
         }
 
     def _get_request_url_from_key(self, key: str) -> str:
-        mapping = {
-            "actual_generations_per_production_type": f"{self.request_base_url}/actual_generation/v1/actual_generations_per_production_type",
-            "actual_generations_per_unit": f"{self.request_base_url}/actual_generation/v1/actual_generations_per_unit"
-        }
-        if key not in mapping:
-            raise KeyError(f"Invalid input 'data_type' keyword: '{key}'. Must be one of {list(mapping.keys())}")
-        return mapping[key]
+        if key not in self.catalog.keys:
+            raise KeyError(f"Invalid input 'data_type' keyword: '{key}'. Must be one of {self.catalog.keys}")
+        return self.catalog.get(key)
     
     @staticmethod
     def _convert_date_to_iso8601(date: datetime) -> datetime:
@@ -52,14 +49,34 @@ class Retriever:
             task_start_date = task_end_date
         return tasks
     
-    @staticmethod
-    def _convert_json_to_dataframe(data, dtype):
-        metas = {
-            "actual_generations_per_production_type": ["production_type"],
-            "actual_generations_per_unit": [['unit', 'eic_code'], ['unit', 'name'], ['unit', 'production_type']]
-            }
-        df = pd.json_normalize(data[dtype], meta=metas[dtype], record_path=["values"], sep="_")
-        return df
+    def _convert_json_to_dataframe(self, data):
+        if isinstance(data, dict):
+            dfs = []
+            meta = {}
+            for key, value in data.items():
+                if isinstance(value, list):
+                    for item in value:
+                        df_item = self._convert_json_to_dataframe(item)
+                        for meta_key, meta_value in data.items():
+                            if not isinstance(meta_value, list):
+                                if isinstance(meta_value, dict):
+                                    for sub_key, sub_value in meta_value.items():
+                                        df_item[f"{meta_key}_{sub_key}"] = sub_value
+                                else:
+                                    df_item[meta_key] = meta_value
+                        dfs.append(df_item)
+                    return pd.concat(dfs, ignore_index=True) if len(dfs) != 0 else pd.DataFrame()
+                elif isinstance(value, dict):
+                    for sub_key, sub_value in value.items():
+                        meta[f"{key}_{sub_key}"] = sub_value
+                else:
+                    meta[key] = value
+            return pd.DataFrame([meta])
+        elif isinstance(data, list):
+            dfs = [self._convert_json_to_dataframe(item) for item in data]
+            return pd.concat(dfs, ignore_index=True)
+        else:
+            return pd.DataFrame([{'value': data}])
 
     def retrieve(self, start_date: str, end_date: str, data_type: list[str] | str, output_dir: str | None = None) -> dict:
         
@@ -80,21 +97,22 @@ class Retriever:
         dfs = {}
 
         for dtype in data_type:
+            start_time = time.time()
             base_url = self._get_request_url_from_key(dtype)
             tasks = self._generate_tasks(start_date, end_date, base_url)
             df_final = pd.DataFrame()
 
             for url in tasks:
               self.logger.info(f"Requesting '{dtype}' from URL: {url}")
-
-              start_time = time.time()
               response = requests.get(url, headers=self.headers)
 
               if response.status_code == 200:
-                  elapsed = round(time.time() - start_time, 4)
-                  self.logger.info(f"Success: '{dtype}' retrieved in {elapsed} seconds")
                   data = response.json()
-                  df = self._convert_json_to_dataframe(data, dtype)
+                  data = next(iter(data.values()))
+                  #import json
+                  #with open(f'data_{dtype}.json', 'w') as f:
+                  #  json.dump(data, f)
+                  df = self._convert_json_to_dataframe(data)
                   df_final = pd.concat([df_final, df])
               else:
                   self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
@@ -105,9 +123,13 @@ class Retriever:
                 filepath = os.path.join(output_dir, f"{dtype}_{start}-{end}.csv")
                 df_final.to_csv(filepath, sep=",", index=False)
                 self.logger.info(f"Data saved at path : {filepath}")
-
               time.sleep(2)
-
-            dfs[dtype] = df_final
+            
+            if df_final.empty:
+                self.logger.warning(f"No available data found for data_type={dtype} between given dates. It will then not appear in the resulting dict of datasets")
+            else:
+                elapsed = round(time.time() - start_time, 4)
+                self.logger.info(f"Success: '{dtype}' retrieved in {elapsed} seconds")
+                dfs[dtype] = df_final
 
         return dfs
