@@ -34,9 +34,27 @@ The generic output format is a pandas dataframe / **.csv** file containing the d
 
 ## 2. Available *data_type* options
 
+It is possible to see the full options catalog using the client attribute **catalog** :
+
+```python
+from openrte import Client
+client = Client(client_id="XXX", client_secret="XXX")
+client.catalog
+```
+
 The following table is an exhaustive list of all possible (currently handled) options for the **data_type** argument for the retrieval, and the description of the associated data :
 
-| **data_type** | Description | Documentation |
-| --- | --- | --- |
-| *actual_generations_per_production_type* | Actual production data aggregated by sector (in MW) in intraday | [Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1) |
-| *actual_generations_per_unit* | Actual production data aggregated by unit (in MW) in intraday | [Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1) |
+| *data_type* | Request URL (Base) |
+|-------------------|-----|
+| `actual_generations_per_production_type` | *https://digital.iservices.rte-france.com/open_api/actual_generation/v1/actual_generations_per_production_type* |
+| `actual_generations_per_unit` | *https://digital.iservices.rte-france.com/open_api/actual_generation/v1/actual_generations_per_unit* |
+| `volumes_per_energy_type` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_energy_type* |
+| `prices` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/prices* |
+| `imbalance_data` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/imbalance_data* |
+| `standard_rr_data` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/standard_rr_data* |
+| `lead_times` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/lead_times* |
+| `afrr_marginal_price` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/afrr_marginal_price* |
+| `volumes_per_entity_price` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_entity_price* |
+| `tso_offers` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/tso_offers* |
+| `standard_afrr_data` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/standard_afrr_data* |
+| `volumes_per_reasons` | *https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_reasons* |
