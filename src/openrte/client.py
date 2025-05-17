@@ -1,5 +1,4 @@
 import requests
-from datetime import datetime
 from requests.auth import HTTPBasicAuth
 
 from openrte.tools import Logger

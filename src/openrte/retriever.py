@@ -21,10 +21,11 @@ class Retriever:
             "Content-Type": "application/json"
         }
 
-    def _get_request_url_from_key(self, key: str) -> str:
+    def _get_request_content_from_key(self, key: str) -> str:
         if key not in self.catalog.keys:
             raise KeyError(f"Invalid input 'data_type' keyword: '{key}'. Must be one of {self.catalog.keys}")
-        return self.catalog.get(key)
+        url, docs = self.catalog.get_key_content(key)
+        return url, docs
     
     @staticmethod
     def _convert_date_to_iso8601(date: datetime) -> datetime:
@@ -98,7 +99,7 @@ class Retriever:
 
         for dtype in data_type:
             start_time = time.time()
-            base_url = self._get_request_url_from_key(dtype)
+            base_url, docs = self._get_request_content_from_key(dtype)
             tasks = self._generate_tasks(start_date, end_date, base_url)
             df_final = pd.DataFrame()
 
@@ -116,6 +117,8 @@ class Retriever:
                   df_final = pd.concat([df_final, df])
               else:
                   self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
+                  if docs is not None:
+                      self.logger.info(f"You can check the related docs at : {docs}")
               
               if output_dir is not None:
                 start = start_date.strftime("%Y%m%d")
@@ -127,6 +130,8 @@ class Retriever:
             
             if df_final.empty:
                 self.logger.warning(f"No available data found for data_type={dtype} between given dates. It will then not appear in the resulting dict of datasets")
+                if docs is not None:
+                      self.logger.info(f"You can check the related docs at : {docs}")
             else:
                 elapsed = round(time.time() - start_time, 4)
                 self.logger.info(f"Success: '{dtype}' retrieved in {elapsed} seconds")
