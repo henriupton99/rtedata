@@ -45,10 +45,10 @@ class Catalog:
         md = []
         md.append("| *data_type* | Request URL (Base) | Documentation |")
         md.append("|-------------------|-----|-----|")
-        for key in self._requests.items():
+        for key in self._requests:
             url, docs = self.get_key_content(key)
             docs = docs if docs is not None else "X"
-            md.append(f"| `{key}` | *[Link]({url})* | *[Link]({docs})*")
+            md.append(f"| `{key}` | *[Link]({url})* | *[Link]({docs})*|")
         return "".join(md)
 
     def __repr__(self):
