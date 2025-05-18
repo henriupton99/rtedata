@@ -1,5 +1,14 @@
 # RTEdata
 
+<p align="center">
+  <img src="https://img.shields.io/pypi/v/rtedata?color=blue" alt="PyPI version" />
+  <img src="https://img.shields.io/pypi/pyversions/rtedata" alt="Python versions" />
+  <img src="https://github.com/henriupton99/rtedata/actions/workflows/tests.yml/badge.svg" alt="Tests" />
+  <img src="https://img.shields.io/pypi/dm/rtedata.svg?label=PyPI%20downloads" alt="Downloads per month" />
+  <img src="https://img.shields.io/github/license/henriupton99/rtedata" alt="License" />
+  <img src="https://img.shields.io/codecov/c/github/henriupton99/rtedata" alt="Coverage" />
+</p>
+
 Python wrapper for [RTE API](https://data.rte-france.com/) requests. 
 
 ## 1. Usage
