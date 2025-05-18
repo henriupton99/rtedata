@@ -1,6 +1,4 @@
-# OpenRTE
-
-![openrte-logo](https://raw.githubusercontent.com/henriupton99/openrte/main/images/openrte.png)
+# RTEdata
 
 Python wrapper for [RTE API](https://data.rte-france.com/) requests. 
 
@@ -19,7 +17,7 @@ You need to follow these first steps in order to setup your wrapper :
 To retrieve data using the wrapper, follow this pipeline :
 
 ```python
-from openrte import Client
+from rtedata import Client
 client = Client(client_id="XXX", client_secret="XXX")
 dfs = client.retrieve_data(start_date="2024-01-01 00:00:00", end_date="2024-01-02 23:59:00", data_type="actual_generations_per_unit", output_dir="./output")
 ```
@@ -37,7 +35,7 @@ The generic output format is a pandas dataframe / **.csv** file containing the d
 It is possible to see the full options catalog using the client attribute **catalog** :
 
 ```python
-from openrte import Client
+from rtedata import Client
 client = Client(client_id="XXX", client_secret="XXX")
 client.catalog
 ```

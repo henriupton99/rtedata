@@ -52,7 +52,7 @@ class Catalog:
         return "".join(md)
 
     def __repr__(self):
-        _repr = "OpenRTE Catalog : \n"
+        _repr = "rtedata Catalog : \n"
         for i, key in enumerate(self._requests):
                 url, docs = self.get_key_content(key)
                 _repr += f"{i} - {key} : \n"

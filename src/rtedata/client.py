@@ -1,9 +1,9 @@
 import requests
 from requests.auth import HTTPBasicAuth
 
-from openrte.tools import Logger
-from openrte.retriever import Retriever
-from openrte.catalog import Catalog
+from rtedata.tools import Logger
+from rtedata.retriever import Retriever
+from rtedata.catalog import Catalog
 
 class Client:
   credentials = ["client_id", "client_secret"]

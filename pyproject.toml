@@ -1,5 +1,5 @@
 [project]
-name = "openrte"
+name = "rtedata"
 version = "1.0.1"
 description = "Python wrapper for RTE API requests"
 authors = [
@@ -20,7 +20,7 @@ dependencies = [
 
 [tool.uv.workspace]
 members = [
-    "openrte",
+    "rtedata",
 ]
 
 [dependency-groups]
@@ -33,5 +33,5 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project.urls]
-Homepage = "https://github.com/henriupton99/openrte"
-Issues = "https://github.com/henriupton99/openrte/issues"
+Homepage = "https://github.com/henriupton99/rtedata"
+Issues = "https://github.com/henriupton99/rtedata/issues"

@@ -6,8 +6,8 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime, timedelta
 
-from openrte.tools import Logger
-from openrte.catalog import Catalog
+from rtedata.tools import Logger
+from rtedata.catalog import Catalog
 
 class Retriever:
     def __init__(self, token: str, logger: Logger, catalog: Catalog):
@@ -16,7 +16,7 @@ class Retriever:
         self.catalog = catalog
 
         self.headers = {
-            "User-Agent": "openrte python package (contact: henriupton99@gmail.com)",
+            "User-Agent": "rtedata python package (contact: henriupton99@gmail.com)",
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json"
         }
