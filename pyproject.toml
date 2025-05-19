@@ -1,6 +1,6 @@
 [project]
 name = "rtedata"
-version = "1.0.1"
+version = "1.0.2"
 description = "Python wrapper for RTE API requests"
 authors = [
   { name="Henri Upton", email="henriupton99@gmail.com" },
@@ -9,7 +9,7 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 readme = "README.md"
 classifiers = [
-    "Programming Language :: Python :: >=3.10",
+    "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
 ]
 requires-python = ">=3.10"

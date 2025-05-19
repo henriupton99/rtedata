@@ -1,4 +1,4 @@
-# RTEdata
+![logo](./misc/rtedata_logo.png)
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/rtedata?color=blue" alt="PyPI version" />
@@ -13,6 +13,10 @@ Python wrapper for [RTE API](https://data.rte-france.com/) requests.
 
 ## 1. Usage
 
+```python
+pip install rtedata
+```
+
 #### 1.1. Get RTE API credentials
 
 You need to follow these first steps in order to setup your wrapper :  
@@ -20,6 +24,7 @@ You need to follow these first steps in order to setup your wrapper :
 * [create an account](https://data.rte-france.com/create_account) on the RTE platform
 * [create an application](https://data.rte-france.com/group/guest/apps) associated to your account (the name and description of the app is not relevant)
 * collect your app IDs (**ID Client** and **ID Secret**) available in your application dashboard
+* **subscribe** to the relevant APIs regarding the "*data_type*" you request (please refer to the table in the last section to get the associated links)
 
 #### 1.2. Generate a data retrieval
 
@@ -51,27 +56,26 @@ client.catalog
 
 The following table is an exhaustive list of all possible (currently handled) options for the **data_type** argument for the retrieval, and the description of the associated data :
 
-| *data_type* | Request URL (Base) | Documentation |
-|-------------------|-----|-----|
-| `actual_generations_per_production_type` | *[Link](https://digital.iservices.rte-france.com/open_api/actual_generation/v1/actual_generations_per_production_type)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1)*|
-| `actual_generations_per_unit` | *[Link](https://digital.iservices.rte-france.com/open_api/actual_generation/v1/actual_generations_per_unit)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1)*|
-| `volumes_per_energy_type` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_energy_type)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `prices` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/prices)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `imbalance_data` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/imbalance_data)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `standard_rr_data` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/standard_rr_data)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `lead_times` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/lead_times)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `afrr_marginal_price` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/afrr_marginal_price)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `volumes_per_entity_price` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_entity_price)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `tso_offers` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/tso_offers)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `standard_afrr_data` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/standard_afrr_data)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `volumes_per_reasons` | *[Link](https://digital.iservices.rte-france.com/open_api/balancing_energy/v4/volumes_per_reasons)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*|
-| `other_market_information` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/other_market_information)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `transmission_network_unavailabilities` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/transmission_network_unavailabilities)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `generation_unavailabilities_versions` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/generation_unavailabilities_versions)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `transmission_network_unavailabilities_versions` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/transmission_network_unavailabilities_versions)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `generation_unavailabilities` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/generation_unavailabilities)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `other_market_information_versions` | *[Link](https://digital.iservices.rte-france.com/open_api/unavailability_additional_information/v6/other_market_information_versions)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*|
-| `capacities_cpc` | *[Link](https://digital.iservices.rte-france.com/open_api/generation_installed_capacities/v1/capacities_cpc)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*|
-| `capacities_per_production_type` | *[Link](https://digital.iservices.rte-france.com/open_api/generation_installed_capacities/v1/capacities_per_production_type)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*|
-| `capacities_per_production_unit` | *[Link](https://digital.iservices.rte-france.com/open_api/generation_installed_capacities/v1/capacities_per_production_unit)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*|
-
+| *data_type* | Catalog URL | Documentation URL | Category |
+|-------------------|-----|-----|-----|
+| `actual_generations_per_production_type` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Actual-Generation/v1.1)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1)*| generation |
+| `actual_generations_per_unit` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Actual-Generation/v1.1)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Actual+Generation/1.1)*| generation |
+| `capacities_cpc` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Generation-Installed-Capacities/v1.1)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*| generation |
+| `capacities_per_production_type` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Generation-Installed-Capacities/v1.1)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*| generation |
+| `capacities_per_production_unit` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Generation-Installed-Capacities/v1.1)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Generation+Installed+Capacities/1.1)*| generation |
+| `other_market_information` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `transmission_network_unavailabilities` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `generation_unavailabilities_versions` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `transmission_network_unavailabilities_versions` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `generation_unavailabilities` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `other_market_information_versions` | *[Link](https://data.rte-france.com/catalog/-/api/generation/Unavailability-Additional-Information/v6.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Unavailability+Additional+Information/6.0)*| generation |
+| `volumes_per_energy_type` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `prices` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `imbalance_data` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `standard_rr_data` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `lead_times` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `afrr_marginal_price` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `volumes_per_entity_price` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `tso_offers` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `standard_afrr_data` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |
+| `volumes_per_reasons` | *[Link](https://data.rte-france.com/catalog/-/api/market/Balancing-Energy/v4.0)* | *[Link](https://data.rte-france.com/catalog/-/api/doc/user-guide/Balancing+Energy/4.0)*| market |'
