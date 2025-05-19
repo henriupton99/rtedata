@@ -1,4 +1,4 @@
-![logo](./misc/rtedata_logo.png)
+![logo](https://raw.githubusercontent.com/henriupton99/rtedata/main/misc/rtedata_logo.png)
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/rtedata?color=blue" alt="PyPI version" />
