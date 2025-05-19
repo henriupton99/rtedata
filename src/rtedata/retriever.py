@@ -24,8 +24,8 @@ class Retriever:
     def _get_request_content_from_key(self, key: str) -> str:
         if key not in self.catalog.keys:
             raise KeyError(f"Invalid input 'data_type' keyword: '{key}'. Must be one of {self.catalog.keys}")
-        url, docs = self.catalog.get_key_content(key)
-        return url, docs
+        request_url, catalog_url, docs_url, category = self.catalog.get_key_content(key)
+        return request_url, catalog_url, docs_url, category
     
     @staticmethod
     def _convert_date_to_iso8601(date: datetime) -> datetime:
@@ -99,8 +99,8 @@ class Retriever:
 
         for dtype in data_type:
             start_time = time.time()
-            base_url, docs = self._get_request_content_from_key(dtype)
-            tasks = self._generate_tasks(start_date, end_date, base_url)
+            request_url, catalog_url, docs_url, category = self._get_request_content_from_key(dtype)
+            tasks = self._generate_tasks(start_date, end_date, request_url)
             df_final = pd.DataFrame()
 
             for url in tasks:
@@ -110,15 +110,12 @@ class Retriever:
               if response.status_code == 200:
                   data = response.json()
                   data = next(iter(data.values()))
-                  #import json
-                  #with open(f'data_{dtype}.json', 'w') as f:
-                  #  json.dump(data, f)
                   df = self._convert_json_to_dataframe(data)
                   df_final = pd.concat([df_final, df])
               else:
                   self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
-                  if docs is not None:
-                      self.logger.info(f"You can check the related docs at : {docs}")
+                  if docs_url is not None:
+                      self.logger.info(f"You can check the related docs at : {docs_url}")
               
               if output_dir is not None:
                 start = start_date.strftime("%Y%m%d")
@@ -130,8 +127,8 @@ class Retriever:
             
             if df_final.empty:
                 self.logger.warning(f"No available data found for data_type={dtype} between given dates. It will then not appear in the resulting dict of datasets")
-                if docs is not None:
-                      self.logger.info(f"You can check the related docs at : {docs}")
+                if docs_url is not None:
+                      self.logger.info(f"You can check the related docs at : {docs_url}")
             else:
                 elapsed = round(time.time() - start_time, 4)
                 self.logger.info(f"Success: '{dtype}' retrieved in {elapsed} seconds")
