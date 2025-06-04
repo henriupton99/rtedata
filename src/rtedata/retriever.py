@@ -24,8 +24,8 @@ class Retriever:
     def _get_request_content_from_key(self, key: str) -> str:
         if key not in self.catalog.keys:
             raise KeyError(f"Invalid input 'data_type' keyword: '{key}'. Must be one of {self.catalog.keys}")
-        request_url, catalog_url, docs_url, category = self.catalog.get_key_content(key)
-        return request_url, catalog_url, docs_url, category
+        request_url, catalog_url, docs_url, category, schema = self.catalog.get_key_content(key)
+        return request_url, catalog_url, docs_url, category, schema
     
     @staticmethod
     def _convert_date_to_iso8601(date: datetime) -> datetime:
@@ -49,35 +49,6 @@ class Retriever:
             tasks.append(f"{base_url}?start_date={start}&end_date={end}")
             task_start_date = task_end_date
         return tasks
-    
-    def _convert_json_to_dataframe(self, data):
-        if isinstance(data, dict):
-            dfs = []
-            meta = {}
-            for key, value in data.items():
-                if isinstance(value, list):
-                    for item in value:
-                        df_item = self._convert_json_to_dataframe(item)
-                        for meta_key, meta_value in data.items():
-                            if not isinstance(meta_value, list):
-                                if isinstance(meta_value, dict):
-                                    for sub_key, sub_value in meta_value.items():
-                                        df_item[f"{meta_key}_{sub_key}"] = sub_value
-                                else:
-                                    df_item[meta_key] = meta_value
-                        dfs.append(df_item)
-                    return pd.concat(dfs, ignore_index=True) if len(dfs) != 0 else pd.DataFrame()
-                elif isinstance(value, dict):
-                    for sub_key, sub_value in value.items():
-                        meta[f"{key}_{sub_key}"] = sub_value
-                else:
-                    meta[key] = value
-            return pd.DataFrame([meta])
-        elif isinstance(data, list):
-            dfs = [self._convert_json_to_dataframe(item) for item in data]
-            return pd.concat(dfs, ignore_index=True)
-        else:
-            return pd.DataFrame([{'value': data}])
 
     def retrieve(self, start_date: str, end_date: str, data_type: list[str] | str, output_dir: str | None = None) -> dict:
         
@@ -99,7 +70,7 @@ class Retriever:
 
         for dtype in data_type:
             start_time = time.time()
-            request_url, catalog_url, docs_url, category = self._get_request_content_from_key(dtype)
+            request_url, catalog_url, docs_url, category, schema = self._get_request_content_from_key(dtype)
             tasks = self._generate_tasks(start_date, end_date, request_url)
             df_final = pd.DataFrame()
 
@@ -109,9 +80,12 @@ class Retriever:
 
               if response.status_code == 200:
                   data = response.json()
+                  print(data)
                   data = next(iter(data.values()))
-                  df = self._convert_json_to_dataframe(data)
-                  df_final = pd.concat([df_final, df])
+                  df = pd.json_normalize(data, sep="_", **schema)
+                  print(df)
+                  if not df.empty:
+                    df_final = pd.concat([df_final, df])
               else:
                   self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
                   if docs_url is not None:
