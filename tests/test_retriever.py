@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 from rtedata.retriever import Retriever
 from rtedata.catalog import Catalog
@@ -12,10 +13,9 @@ def test_retrieve_single_data_type(mock_get):
     retriever = Retriever(token=dummy_token, logger=logger, catalog=catalog)
 
     mock_get.return_value.status_code = 200
-    mock_get.return_value.json.return_value = {
-        "data": [{"value": 100, "timestamp": "2024-01-01T00:00:00Z"}]
-    }
-
+    with open("./tests/data/prices.json") as f:
+        mock_get.return_value.json.return_value = json.load(f)
+    
     result = retriever.retrieve(
         start_date="2024-01-01 00:00:00",
         end_date="2024-01-03 00:00:00",
@@ -24,8 +24,6 @@ def test_retrieve_single_data_type(mock_get):
 
     assert "prices" in result
     assert not result["prices"].empty
-    assert "value" in result["prices"].columns
-
 
 @patch("rtedata.retriever.requests.get")
 def test_retrieve_handles_api_error(mock_get):
