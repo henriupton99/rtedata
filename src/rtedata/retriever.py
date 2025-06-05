@@ -80,10 +80,8 @@ class Retriever:
 
               if response.status_code == 200:
                   data = response.json()
-                  print(data)
                   data = next(iter(data.values()))
-                  df = pd.json_normalize(data, sep="_", **schema)
-                  print(df)
+                  df = pd.json_normalize(data, sep="_", errors="ignore", **schema)
                   if not df.empty:
                     df_final = pd.concat([df_final, df])
               else:

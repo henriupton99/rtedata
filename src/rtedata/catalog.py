@@ -30,7 +30,7 @@ class Catalog:
                 "keys": {
                     #"capacities_cpc": {"schema": {}},
                     #"capacities_per_production_type": {"schema": {"record_path": "values", "meta": []}}, 
-                    "capacities_per_production_unit": {"schema": {"record_path": "values", "meta": [["production_unit", "code_eic"], ["production_unit", "name"], ["production_unit", "location"], ["production_unit", "code_eic_producteur"], ["production_unit", "name_producteur"]], "errors": "ignore"}}
+                    "capacities_per_production_unit": {"schema": {"record_path": "values", "meta": [["production_unit", "code_eic"], ["production_unit", "name"], ["production_unit", "location"], ["production_unit", "code_eic_producteur"], ["production_unit", "name_producteur"]]}}
                 }
             },
             
@@ -50,7 +50,7 @@ class Catalog:
                 "catalog_url": f"{self.catalog_base_url}/generation/Generation-Forecast/v2.1#",
                 "category": "generation",
                 "keys": {
-                    "forecasts": {"schema": {"record_path": ["values"], "meta": ["type", "production_type", "sub_type"], "errors": "ignore"}}
+                    "forecasts": {"schema": {"record_path": ["values"], "meta": ["type", "production_type", "sub_type"]}}
                 },
             },
             
@@ -64,7 +64,7 @@ class Catalog:
                     "imbalance_data": {"schema": {"record_path": ["values"], "meta": ["resolution"]}},
                     "lead_times": {"schema": {"record_path": ["values"], "meta": ["resolution"]}},
                     "volumes_per_entity_type": {"schema": {"record_path": ["values"], "meta": ["resolution"]}},
-                    "tso_offers": {"schema": {"record_path": ["values"], "meta": ["type", "tso_offering", "tso_activating"], "errors": "ignore"}},
+                    "tso_offers": {"schema": {"record_path": ["values"], "meta": ["type", "tso_offering", "tso_activating"]}},
                     "volumes_per_reasons": {"schema": {"record_path": ["values"], "meta": ["resolution"]}}
                 }
             },
@@ -144,16 +144,6 @@ class Catalog:
         category = key_content.get("category")
         schema = key_content.get("schema")
         return request_url, catalog_url, docs_url, category, schema
-      
-    def to_markdown(self) -> str:
-        md = []
-        md.append("| *data_type* | Catalog URL | Documentation URL | Category |")
-        md.append("|-------------------|-----|-----|-----|")
-        for key in self._requests:
-            request_url, catalog_url, docs_url, category, schema = self.get_key_content(key)
-            docs_url = docs_url if docs_url is not None else "X"
-            md.append(f"| `{key}` | *[Link]({catalog_url})* | *[Link]({docs_url})*| {category} |")
-        return "".join(md)
     
     def to_markdown_by_category(self) -> str:
         from collections import defaultdict
