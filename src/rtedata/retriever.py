@@ -2,6 +2,8 @@ import os
 import time
 import requests
 import pandas as pd
+pd.set_option('future.no_silent_downcasting', True)
+import numpy as np
 
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -72,35 +74,46 @@ class Retriever:
             start_time = time.time()
             request_url, catalog_url, docs_url, category, schema = self._get_request_content_from_key(dtype)
             tasks = self._generate_tasks(start_date, end_date, request_url)
-            df_final = pd.DataFrame()
+            dfs_tasks = []
 
             for url in tasks:
-              self.logger.info(f"Requesting '{dtype}' from URL: {url}")
-              response = requests.get(url, headers=self.headers)
+                self.logger.info(f"Requesting '{dtype}' from URL: {url}")
+                response = requests.get(url, headers=self.headers)
 
-              if response.status_code == 200:
-                  data = response.json()
-                  data = next(iter(data.values()))
-                  df = pd.json_normalize(data, sep="_", errors="ignore", **schema)
-                  if not df.empty:
-                    df_final = pd.concat([df_final, df])
-              else:
-                  self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
-                  if docs_url is not None:
-                      self.logger.info(f"You can check the related docs at : {docs_url}")
+                if response.status_code == 200:
+                    data = response.json()
+                    data = next(iter(data.values()))
+                    df = pd.json_normalize(data, sep="_", errors="ignore", **schema)
+                    df = df.replace({None: np.nan})
+                    if not df.empty:
+                        dfs_tasks.append(df)
+                else:
+                    self.logger.error(f"Failed to retrieve '{dtype}': {response.status_code} - {response.text}")
+                    if docs_url is not None:
+                        self.logger.info(f"You can check the related docs at : {docs_url}")
               
-              if output_dir is not None:
+            if len(dfs_tasks) == 0:
+                self.logger.warning(f"No available data found for data_type={dtype} between given dates. It will then not appear in the resulting dict of datasets")
+                if docs_url is not None:
+                    self.logger.info(f"You can check the related docs at : {docs_url}")
+                continue
+            
+            for colname in dfs_tasks[0].columns:
+                if any(df[colname].isna().all() for df in dfs_tasks):
+                    self.logger.warning(f"Detected column '{colname}' with all NA values. It will be removed from resulting dataframe as it is not a consistent column")
+                    dfs_tasks = [df.drop([colname], axis=1) for df in dfs_tasks]
+            
+            df_final = pd.concat(dfs_tasks)
+                
+            if output_dir is not None:
                 start = start_date.strftime("%Y%m%d")
                 end = end_date.strftime("%Y%m%d")
                 filepath = os.path.join(output_dir, f"{dtype}_{start}-{end}.csv")
                 df_final.to_csv(filepath, sep=",", index=False)
                 self.logger.info(f"Data saved at path : {filepath}")
-              time.sleep(2)
             
-            if df_final.empty:
-                self.logger.warning(f"No available data found for data_type={dtype} between given dates. It will then not appear in the resulting dict of datasets")
-                if docs_url is not None:
-                      self.logger.info(f"You can check the related docs at : {docs_url}")
+                time.sleep(2)
+            
             else:
                 elapsed = round(time.time() - start_time, 4)
                 self.logger.info(f"Success: '{dtype}' retrieved in {elapsed} seconds")
