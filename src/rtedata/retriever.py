@@ -45,9 +45,9 @@ class Retriever:
         task_start_date = start_date
         tasks = []
         while task_start_date < end_date:
-            task_end_date = min(task_start_date + timedelta(days=7), end_date)
-            start = self._convert_date_to_iso8601(task_start_date)
-            end = self._convert_date_to_iso8601(task_end_date)
+            task_end_date = min(task_start_date + timedelta(days=4), end_date)
+            start = self._convert_date_to_iso8601(task_start_date - timedelta(days=1))
+            end = self._convert_date_to_iso8601(task_end_date + timedelta(days=1))
             tasks.append(f"{base_url}?start_date={start}&end_date={end}")
             task_start_date = task_end_date
         return tasks
@@ -104,6 +104,7 @@ class Retriever:
                     dfs_tasks = [df.drop([colname], axis=1) for df in dfs_tasks]
             
             df_final = pd.concat(dfs_tasks)
+            df_final.drop_duplicates(inplace=True)
                 
             if output_dir is not None:
                 start = start_date.strftime("%Y%m%d")

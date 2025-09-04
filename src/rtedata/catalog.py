@@ -17,7 +17,7 @@ class Catalog:
                 "category": "generation",
                 "keys": {
                     "actual_generations_per_production_type": {"schema": {"record_path": "values", "meta": ["production_type"]}},
-                    "actual_generations_per_unit": {"schema": {"record_path": "values", "meta": [["unit", "eic_code"], ["unit", "name"]]}},
+                    "actual_generations_per_unit": {"schema": {"record_path": "values", "meta": [["unit", "eic_code"], ["unit", "name"], ["unit", "production_type"]]}},
                     #"water_reserves": {"schema": {"record_path": "values", "meta": []}}, TBU
                     "generation_mix_15min_time_scale": {"schema": {"record_path": "values", "meta": ["production_type", "production_subtype"]}}
                 }
